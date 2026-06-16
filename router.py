@@ -18,9 +18,17 @@ class ChatRequest(BaseModel):
 
 @app.post("/v1/chat/completions")
 async def chat_completions(req: ChatRequest):
+    # লুপ এবং প্রাইভেসী ডিসক্লেমার এড়াতে সিস্টেম প্রম্পট ইনজেকশন
+    processed_messages = req.messages.copy()
+    if not any(msg.get("role") == "system" for msg in processed_messages):
+        processed_messages.insert(0, {
+            "role": "system", 
+            "content": "You are Hisab AI, a helpful and concise assistant. Always respond directly to the user's prompt in the requested language without repeating generic disclaimers or privacy notices."
+        })
+
     payload = {
         "model": "hisab-ai",
-        "messages": req.messages,
+        "messages": processed_messages,
         "max_tokens": req.max_tokens if req.max_tokens != 256 else 512,
         "temperature": req.temperature,
         "stream": req.stream,

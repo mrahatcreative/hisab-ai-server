@@ -3,7 +3,7 @@ FROM python:3.12-slim
 ARG HF_TOKEN
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    wget curl ca-certificates && \
+    wget curl ca-certificates libgomp1 && \
     rm -rf /var/lib/apt/lists/*
 
 # Download llama-server from release tarball

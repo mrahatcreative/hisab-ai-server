@@ -5,11 +5,4 @@ services:
     ports:
       - "5328:5328"
       - "8080:8080"
-    environment:
-      - HF_TOKEN=${HF_TOKEN:-}
-    volumes:
-      - model-cache:/models
     restart: unless-stopped
-
-volumes:
-  model-cache:

@@ -18,7 +18,6 @@ class ChatRequest(BaseModel):
 
 @app.post("/v1/chat/completions")
 async def chat_completions(req: ChatRequest):
-    # লুপ এবং প্রাইভেসী ডিসক্লেমার এড়াতে সিস্টেম প্রম্পট ইনজেকশন
     processed_messages = req.messages.copy()
     if not any(msg.get("role") == "system" for msg in processed_messages):
         processed_messages.insert(0, {
@@ -32,10 +31,9 @@ async def chat_completions(req: ChatRequest):
         "max_tokens": req.max_tokens if req.max_tokens != 256 else 512,
         "temperature": req.temperature,
         "stream": req.stream,
-        "stop": ["<|im_end|>", "<|object_ref|>"],
-        "thinking_budget": 0,
+        "stop": ["<|im_end|>", "<|object_ref|>", "<think>", "</think>"],
         "extra_body": {
-            "thinking_budget": 0
+            "max_thought_tokens": 0
         }
     }
     try:

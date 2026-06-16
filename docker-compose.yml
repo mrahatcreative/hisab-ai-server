@@ -25,7 +25,7 @@ services:
   router:
     build:
       context: .
-      dockerfile: Dockerfile.router
+      dockerfile: Dockerfile
     container_name: hisab-ai-router
     ports:
       - "5328:5328"

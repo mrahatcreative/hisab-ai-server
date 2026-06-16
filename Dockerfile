@@ -17,18 +17,10 @@ RUN wget -qO /tmp/llama.tar.gz \
 
 ENV LD_LIBRARY_PATH=/opt/llama:$LD_LIBRARY_PATH
 
-# Download GGUF model during build
+# Download GGUF model during build (separate script avoids Coolify ARG injection breaking multi-line strings)
+COPY download_model.py /download_model.py
 RUN pip install -q --no-cache-dir huggingface-hub && \
-    python3 -c "
-from huggingface_hub import hf_hub_download
-print('Downloading gemma-3-1b-it-Q4_K_M.gguf (806 MB)...')
-path = hf_hub_download(
-    repo_id='unsloth/gemma-3-1b-it-GGUF',
-    filename='gemma-3-1b-it-Q4_K_M.gguf',
-    local_dir='/models'
-)
-print(f'Model cached at {path}')
-"
+    python3 /download_model.py
 
 WORKDIR /app
 

@@ -24,7 +24,7 @@ async def chat_completions(req: ChatRequest):
         "max_tokens": req.max_tokens if req.max_tokens != 256 else 512,
         "temperature": req.temperature,
         "stream": req.stream,
-        "stop": ["<|im_end|>", "<|object_ref|>", "</think>"]
+        "stop": ["<|im_end|>", "<|object_ref|>"]  # </think> বাদ দেওয়া হলো জেনারেশন সচল রাখতে
     }
     try:
         r = requests.post(LLAMA_URL, json=payload, timeout=60)

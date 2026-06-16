@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-MODEL_PATH="/models/Qwen3.5-2B-Q4_K_M.gguf"
+# মডেলের পাথ পরিবর্তন করে নতুন ৩বি মডেলের নাম দেওয়া হলো
+MODEL_PATH="/models/Qwen2.5-3B-Instruct-Q4_K_M.gguf"
 
 echo "=== Hisab AI — Starting ==="
 

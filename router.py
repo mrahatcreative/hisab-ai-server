@@ -25,18 +25,15 @@ async def chat_completions(req: ChatRequest):
             "content": "You are Hisab AI, a helpful and concise assistant. Always respond directly to the user's prompt in the requested language without repeating generic disclaimers or privacy notices."
         })
 
-payload = {
+    payload = {
         "model": "hisab-ai",
         "messages": processed_messages,
         "max_tokens": req.max_tokens if req.max_tokens != 256 else 512,
         "temperature": req.temperature,
         "stream": req.stream,
-        "stop": ["<|im_end|>", "<|object_ref|>"], # এখান থেকে <think> ট্যাগ বাদ দিন
-        "thinking_budget": 0,                      # ডিফল্ট ফিল্ড ০ রাখুন
-        "extra_body": {
-            "thinking_budget": 0                   # কাস্টম বডিতেও ০ রাখুন
-        }
+        "stop": ["<|im_end|>", "<|object_ref|>"]
     }
+    
     try:
         r = requests.post(LLAMA_URL, json=payload, timeout=60)
         r.raise_for_status()

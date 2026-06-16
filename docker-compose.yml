@@ -4,8 +4,10 @@ services:
     container_name: hisab-ai-llama
     command:
       - --server
-      - -m
-      - /models/hisab-ai.gguf
+      - --hf-repo
+      - unsloth/gemma-3-1b-it-GGUF
+      - --hf-file
+      - gemma-3-1b-it-Q4_K_M.gguf
       - --port
       - "8080"
       - --host
@@ -18,8 +20,17 @@ services:
       - "0"
     ports:
       - "8080:8080"
+    environment:
+      - HF_HOME=/models/cache
+      - HF_TOKEN=${HF_TOKEN:-}
     volumes:
-      - /home/mrahat/models/hisab-ai.gguf:/models/hisab-ai.gguf
+      - llama-cache:/models/cache
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 120s
     restart: unless-stopped
 
   router:
@@ -32,5 +43,9 @@ services:
     environment:
       - LLAMA_URL=http://llama-ai:8080/v1/chat/completions
     depends_on:
-      - llama-ai
+      llama-ai:
+        condition: service_healthy
     restart: unless-stopped
+
+volumes:
+  llama-cache:

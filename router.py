@@ -21,9 +21,10 @@ async def chat_completions(req: ChatRequest):
     payload = {
         "model": "hisab-ai",
         "messages": req.messages,
-        "max_tokens": req.max_tokens,
+        "max_tokens": req.max_tokens if req.max_tokens != 256 else 512,
         "temperature": req.temperature,
         "stream": req.stream,
+        "stop": ["<|im_end|>", "<|object_ref|>", "</think>"]
     }
     try:
         r = requests.post(LLAMA_URL, json=payload, timeout=60)

@@ -1,51 +1,15 @@
 services:
-  llama-ai:
-    image: ghcr.io/ggerganov/llama.cpp:full
-    container_name: hisab-ai-llama
-    command:
-      - --server
-      - --hf-repo
-      - unsloth/gemma-3-1b-it-GGUF
-      - --hf-file
-      - gemma-3-1b-it-Q4_K_M.gguf
-      - --port
-      - "8080"
-      - --host
-      - "0.0.0.0"
-      - --ctx-size
-      - "4096"
-      - --parallel
-      - "3"
-      - -ngl
-      - "0"
-    ports:
-      - "8080:8080"
-    environment:
-      - HF_HOME=/models/cache
-      - HF_TOKEN=${HF_TOKEN:-}
-    volumes:
-      - llama-cache:/models/cache
-    healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:8080/health || exit 1"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-      start_period: 120s
-    restart: unless-stopped
-
-  router:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: hisab-ai-router
+  hisab-ai:
+    build: .
+    container_name: hisab-ai
     ports:
       - "5328:5328"
+      - "8080:8080"
     environment:
-      - LLAMA_URL=http://llama-ai:8080/v1/chat/completions
-    depends_on:
-      llama-ai:
-        condition: service_healthy
+      - HF_TOKEN=${HF_TOKEN:-}
+    volumes:
+      - model-cache:/models
     restart: unless-stopped
 
 volumes:
-  llama-cache:
+  model-cache:

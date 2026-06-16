@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-MODEL_PATH="/models/gemma-3-1b-it-Q4_K_M.gguf"
+MODEL_PATH="/models/Qwen3.5-2B-Q4_K_M.gguf"
 
 echo "=== Hisab AI — Starting ==="
 
@@ -19,7 +19,7 @@ llama-server \
     -m "$MODEL_PATH" \
     --port 8080 \
     --host 0.0.0.0 \
-    --ctx-size 4096 \
+    --ctx-size 8192 \
     --parallel 3 \
     -ngl 0 &
 

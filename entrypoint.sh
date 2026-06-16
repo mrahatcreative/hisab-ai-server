@@ -17,14 +17,12 @@ echo "Model found at $MODEL_PATH"
 echo "Starting llama-server..."
 llama-server \
     -m "$MODEL_PATH" \
-    --port 8080 \
+--port 8080 \
     --host 0.0.0.0 \
     --ctx-size 2048 \
     --parallel 3 \
     --threads 16 \
     --threads-batch 16 \
-    --use-mmap \
-    --use-mlock \
     --chat-template chatml \
     -ngl 0 &
 

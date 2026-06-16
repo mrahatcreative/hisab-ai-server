@@ -13,14 +13,14 @@ fi
 
 echo "Model found at $MODEL_PATH"
 
-# Start llama-server in background with performance optimizations
+# Start llama-server in background with optimized high-concurrency settings
 echo "Starting llama-server..."
 llama-server \
     -m "$MODEL_PATH" \
---port 8080 \
+    --port 8080 \
     --host 0.0.0.0 \
-    --ctx-size 2048 \
-    --parallel 3 \
+    --ctx-size 4096 \
+    --parallel 16 \
     --threads 16 \
     --threads-batch 16 \
     --chat-template chatml \

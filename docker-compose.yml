@@ -1,0 +1,36 @@
+services:
+  llama-ai:
+    image: ghcr.io/ggerganov/llama.cpp:full
+    container_name: hisab-ai-llama
+    command:
+      - --server
+      - -m
+      - /models/hisab-ai.gguf
+      - --port
+      - "8080"
+      - --host
+      - "0.0.0.0"
+      - --ctx-size
+      - "4096"
+      - --parallel
+      - "3"
+      - -ngl
+      - "0"
+    ports:
+      - "8080:8080"
+    volumes:
+      - /home/mrahat/models/hisab-ai.gguf:/models/hisab-ai.gguf
+    restart: unless-stopped
+
+  router:
+    build:
+      context: .
+      dockerfile: Dockerfile.router
+    container_name: hisab-ai-router
+    ports:
+      - "5328:5328"
+    environment:
+      - LLAMA_URL=http://llama-ai:8080/v1/chat/completions
+    depends_on:
+      - llama-ai
+    restart: unless-stopped

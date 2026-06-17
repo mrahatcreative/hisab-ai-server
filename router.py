@@ -18,19 +18,8 @@ class ChatRequest(BaseModel):
 
 @app.post("/v1/chat/completions")
 async def chat_completions(req: ChatRequest):
+    # Pass through backend's messages as-is — backend has the full system prompt
     processed_messages = req.messages.copy()
-    
-    # Gemma 4 auto-detects chat template from GGUF — send plain text without format tokens
-    system_prompt = (
-        "You are Hisab AI, an advanced AI collaborator created to assist efficiently. "
-        "CRITICAL RULE: Always respond in clear, natural, standard Bengali (শুদ্ধ বাংলা) "
-        "whenever the user speaks in Bengali or Romanized Bengali (Banglish). Do not use broken words or dialects. "
-        "Keep your responses precise, direct, and helpful."
-    )
-    
-    # বিদ্যমান কোনো সিস্টেম মেসেজ থাকলে তা রিমুভ করে একদম ফ্রেশ প্রম্পট দেওয়া হচ্ছে
-    processed_messages = [msg for msg in processed_messages if msg.get("role") != "system"]
-    processed_messages.insert(0, {"role": "system", "content": system_prompt})
 
     payload = {
         "model": "hisab-ai",

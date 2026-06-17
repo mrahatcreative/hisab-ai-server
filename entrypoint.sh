@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-MODEL_PATH="/models/Qwen2.5-3B-Instruct-Q4_K_M.gguf"
+MODEL_PATH="/models/gemma-4-E4B-it-Q4_K_M.gguf"
 
 echo "=== Hisab AI — Starting ==="
 
@@ -23,7 +23,7 @@ trap cleanup EXIT SIGTERM SIGINT
 
 # Start llama-server with exact parameters
 echo "Starting llama-server with exact parameters..."
-llama-server -m "$MODEL_PATH" --port 8080 --host 0.0.0.0 --ctx-size 65536 --parallel 16 --threads 16 --threads-batch 16 --chat-template chatml -ngl 0 &
+llama-server -m "$MODEL_PATH" --port 8080 --host 0.0.0.0 --ctx-size 6144 --parallel 2 --threads 4 --threads-batch 4 -ngl 0 &
 LLAMA_PID=$!
 
 # Wait for llama-server to be ready

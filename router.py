@@ -20,13 +20,12 @@ class ChatRequest(BaseModel):
 async def chat_completions(req: ChatRequest):
     processed_messages = req.messages.copy()
     
-    # সিস্টেম প্রম্পট ইঞ্জিনিয়ারিং আরও কঠোর করা হলো
+    # Gemma 4 auto-detects chat template from GGUF — send plain text without format tokens
     system_prompt = (
-        "<|im_start||system\n"
         "You are Hisab AI, an advanced AI collaborator created to assist efficiently. "
         "CRITICAL RULE: Always respond in clear, natural, standard Bengali (শুদ্ধ বাংলা) "
         "whenever the user speaks in Bengali or Romanized Bengali (Banglish). Do not use broken words or dialects. "
-        "Keep your responses precise, direct, and helpful.<|im_end|>\n"
+        "Keep your responses precise, direct, and helpful."
     )
     
     # বিদ্যমান কোনো সিস্টেম মেসেজ থাকলে তা রিমুভ করে একদম ফ্রেশ প্রম্পট দেওয়া হচ্ছে
@@ -39,7 +38,7 @@ async def chat_completions(req: ChatRequest):
         "max_tokens": req.max_tokens if req.max_tokens != 256 else 512,
         "temperature": req.temperature if req.temperature != 0.1 else 0.3,
         "stream": req.stream,
-        "stop": ["<|im_end|>", "<|object_ref|>", "<|im_start|>"]
+        "stop": ["<end_of_turn>"]
     }
     
     try:

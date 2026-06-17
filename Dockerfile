@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Download llama-server from release tarball
 RUN wget -qO /tmp/llama.tar.gz \
-    https://github.com/ggml-org/llama.cpp/releases/download/b9567/llama-b9567-bin-ubuntu-x64.tar.gz && \
+    https://github.com/ggml-org/llama.cpp/releases/download/b9672/llama-b9672-bin-ubuntu-x64.tar.gz && \
     mkdir -p /opt/llama && \
     tar xzf /tmp/llama.tar.gz -C /opt/llama --strip-components=1 && \
     rm /tmp/llama.tar.gz && \

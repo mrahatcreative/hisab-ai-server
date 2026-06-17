@@ -13,25 +13,33 @@ LLAMA_URL = os.environ.get("LLAMA_URL", "http://localhost:8080/v1/chat/completio
 class ChatRequest(BaseModel):
     messages: list
     max_tokens: int = 256
-    temperature: float = 0.1
+    temperature: float = 0.3  # তাপমাত্রা কিছুটা বাড়িয়ে ০.৩ করা হলো যাতে ভাষা স্বাভাবিক হয়
     stream: bool = False
 
 @app.post("/v1/chat/completions")
 async def chat_completions(req: ChatRequest):
     processed_messages = req.messages.copy()
-    if not any(msg.get("role") == "system" for msg in processed_messages):
-        processed_messages.insert(0, {
-            "role": "system", 
-            "content": "You are Hisab AI, a helpful and concise assistant. Always respond directly to the user's prompt in the requested language without repeating generic disclaimers or privacy notices."
-        })
+    
+    # সিস্টেম প্রম্পট ইঞ্জিনিয়ারিং আরও কঠোর করা হলো
+    system_prompt = (
+        "<|im_start||system\n"
+        "You are Hisab AI, an advanced AI collaborator created to assist efficiently. "
+        "CRITICAL RULE: Always respond in clear, natural, standard Bengali (শুদ্ধ বাংলা) "
+        "whenever the user speaks in Bengali or Romanized Bengali (Banglish). Do not use broken words or dialects. "
+        "Keep your responses precise, direct, and helpful.<|im_end|>\n"
+    )
+    
+    # বিদ্যমান কোনো সিস্টেম মেসেজ থাকলে তা রিমুভ করে একদম ফ্রেশ প্রম্পট দেওয়া হচ্ছে
+    processed_messages = [msg for msg in processed_messages if msg.get("role") != "system"]
+    processed_messages.insert(0, {"role": "system", "content": system_prompt})
 
     payload = {
         "model": "hisab-ai",
         "messages": processed_messages,
         "max_tokens": req.max_tokens if req.max_tokens != 256 else 512,
-        "temperature": req.temperature,
+        "temperature": req.temperature if req.temperature != 0.1 else 0.3,
         "stream": req.stream,
-        "stop": ["<|im_end|>", "<|object_ref|>"]
+        "stop": ["<|im_end|>", "<|object_ref|>", "<|im_start|>"]
     }
     
     try:

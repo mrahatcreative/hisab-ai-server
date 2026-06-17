@@ -18,9 +18,12 @@ echo "Model found at $MODEL_PATH"
 echo "Starting llama-server..."
 llama-server \
     -m "$MODEL_PATH" \
+# Start llama-server with scalable context for 16 parallel slots (16 * 4096 = 65536)
+llama-server \
+    -m "$MODEL_PATH" \
     --port 8080 \
     --host 0.0.0.0 \
-    --ctx-size 4096 \
+    --ctx-size 65536 \
     --parallel 16 \
     --threads 16 \
     --threads-batch 16 \
